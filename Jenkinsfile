@@ -42,6 +42,7 @@ pipeline{
 			steps {
 				dependencyCheck additionalArguments: '--scan ./src --noupdate --disableYarnAudit --disableNodeAudit --exclude node_modules --format ALL', odcInstallation: 'DP-Check'
 				dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+				sh 'echo $USER'
 			}
 		}
 

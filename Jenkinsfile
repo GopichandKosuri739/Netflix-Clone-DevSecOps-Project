@@ -58,6 +58,7 @@ pipeline{
                        sh "docker build --build-arg TMDB_V3_API_KEY=<yourapikey> -t netflix ."
                        sh "docker tag netflix gopichand7391/netflix:latest "
                        sh "docker push gopichand7391/netflix:latest "
+		       sh 'echo docker image pushed'   // ✅ Confirmation log
                     }
                 }
             }

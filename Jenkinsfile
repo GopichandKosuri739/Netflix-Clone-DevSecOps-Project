@@ -84,6 +84,7 @@ pipeline {
         stage('Deploy to container') {
             steps {
                 sh 'docker run -d --name netflix -p 8081:80 gopichand7391/netflix:latest'
+                sh 'echo Hurry!! Netflix Container Deployed Successfully'
             }
         }
     }

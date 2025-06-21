@@ -37,14 +37,14 @@ pipeline{
             steps {
                 sh "npm install"
             }
-        }	
-		stage('OWASP FS SCAN') {
-			steps {
-				dependencyCheck additionalArguments: '--scan ./src --noupdate --disableYarnAudit --disableNodeAudit --exclude node_modules --format ALL', odcInstallation: 'DP-Check'
-				dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-				sh 'echo $USER'
-			}
-		}
+        }    
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./src --noupdate --disableYarnAudit --disableNodeAudit --exclude node_modules --format ALL', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                sh 'echo $USER'
+            }
+        }
 
         stage('TRIVY FS SCAN') {
             steps {
@@ -53,13 +53,16 @@ pipeline{
         }
         stage("Docker Build & Push"){
             steps{
-                script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build --build-arg TMDB_V3_API_KEY=$TMDB_API -t netflix ."
-                       sh "docker tag netflix gopichand7391/netflix:latest "
-                       sh "docker push gopichand7391/netflix:latest "
-		       sh 'echo docker image pushed'   // ✅ Confirmation log
-                    }
+                script {
+                            withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                                withCredentials([string(credentialsId: 'TMDB_V3_API_KEY', variable: 'TMDB_API')]) {
+                                    sh '''#!/bin/bash
+                                        docker build --build-arg TMDB_V3_API_KEY=${TMDB_API} -t netflix .
+                                        docker tag netflix gopichand7391/netflix:latest
+                                        docker push gopichand7391/netflix:latest
+                                        echo "✅ Docker image pushed"
+                                    '''
+                                }
                 }
             }
         }
@@ -75,4 +78,3 @@ pipeline{
         }
     }
 }
-

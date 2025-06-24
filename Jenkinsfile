@@ -88,7 +88,6 @@ pipeline {
             }
         }
     }
-}
 post {
      always {
         emailext attachLog: true,
